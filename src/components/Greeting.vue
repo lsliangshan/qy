@@ -1,16 +1,17 @@
 <template>
-  <div class="container">
+  <div class="container"
+       :style="containerStyles"
+       v-if="!forceHide">
     <svg>
-      <g class="pmspacesvg"
-         transform="translate(130,97.72999954223633)">
-        <rect height="10"
+      <g class="pmspacesvg">
+        <!-- <rect height="10"
               width="10"
               x="0"
-              y="44.540000915527344"></rect>
-        <rect height="10"
+              y="44.540000915527344"></rect> -->
+        <!-- <rect height="10"
               width="10"
               x="70"
-              y="0"></rect>
+              y="0"></rect> -->
         <g>
           <rect stroke-width="2"
                 x="0"
@@ -41,8 +42,75 @@
     </svg>
   </div>
 </template>
-<style scoped>
+<style scoped lang="less">
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease-in-out;
+  background-color: @theme-color;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+}
+.container svg {
+  width: 80px;
+  height: 55px;
+  z-index: 1;
+  transform: scale(0.45);
+}
 .pmspacesvg {
-  fill: #9b59b6;
+  fill: @theme-color;
 }
 </style>
+<script>
+export default {
+  name: 'Greeting',
+  props: {
+    hide: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      greetingLoad: false,
+      forceHide: this.$route.name !== 'Home'
+    }
+  },
+  computed: {
+    containerStyles () {
+      return {
+        opacity: this.greetingLoad ? 0 : 1
+      }
+    }
+  },
+  created () {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.finished(300)
+      }, 800)
+    })
+  },
+  methods: {
+    finished (delay = 0) {
+      this.greetingLoad = true
+      setTimeout(() => {
+        this.$emit('finish')
+      }, delay)
+    }
+  },
+  watch: {
+    hide: {
+      immediate: true,
+      handler (val) {
+        if (val) {
+          this.finished()
+        }
+      }
+    }
+  }
+}
+</script>
+

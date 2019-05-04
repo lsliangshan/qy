@@ -37,6 +37,9 @@
 // >>>> mutations:
 export const UPDATE_LOADING_STATUS = 'UPDATE_LOADING_STATUS'
 
+export const OPEN_DRAWER_MODAL = 'OPEN_DRAWER_MODAL'
+export const CLOSE_DRAWER_MODAL = 'CLOSE_DRAWER_MODAL'
+
 // >>>> actions:
 
 // 登录1

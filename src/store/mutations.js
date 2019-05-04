@@ -39,5 +39,11 @@ import * as types from './mutation-types'
 export const mutations = {
   [types.UPDATE_LOADING_STATUS] (state, data) {
     state.isLoading = data.isLoading
+  },
+  [types.OPEN_DRAWER_MODAL] (state, data) {
+    state.drawer.shown = true
+  },
+  [types.CLOSE_DRAWER_MODAL] (state, data) {
+    state.drawer.shown = false
   }
 }

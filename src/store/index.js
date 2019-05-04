@@ -46,11 +46,11 @@ const store = new Vuex.Store({
   mutations: mutations.mutations,
   getters: getters.getters,
   state: {
-    username: 'ls',
-    author: '智愚',
-    appName: 'RQQ WX',
-    fullAppName: 'RQQ',
-    shortAppName: 'R',
+    username: 'Keith',
+    author: 'Keith',
+    appName: 'QY',
+    fullAppName: 'QY',
+    shortAppName: 'Q',
     tabbars: [
       {
         name: 'activity',
@@ -71,6 +71,10 @@ const store = new Vuex.Store({
         path: '/profile/index'
       }
     ],
+    drawer: {
+      shown: false,
+      showMode: 'push'
+    },
     assets: {
       maleAvatar: '/static/images/avatar_male_1.jpg',
       femaleAvatar: '/static/images/avatar_female_1.jpg'
@@ -78,7 +82,7 @@ const store = new Vuex.Store({
     requestInfo: {
     },
     isLoading: false, // 页面是否在加载中
-    loginInfo: {'username': 'ls', 'phonenum': '18000000001', 'email': '', 'nickname': '前端开荒牛', 'headIcon': 'https://static.dei2.com/plugins_admin/img/upload_dacaabf0a8bd16a5d24bc2feb7f0dbdc.png', 'lastLoginTime': '1526375120974', 'lastLoginIp': '', 'birthday': '1515922620952', 'gender': 1, 'website': '', 'status': 1, 'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTI2OTc0NzY3LCJleHAiOjE1Mjc1Nzk1Njd9.20AF6k9X9wR-_C4ZmRLcY5JWGWkDWAWNLkixbH8mu14', 'plugins': '', 'role': 3, 'createdAt': '2018-01-14T09:55:13.000Z', 'updatedAt': '2018-05-15T09:05:20.000Z'},
+    loginInfo: { 'username': 'ls', 'phonenum': '18000000001', 'email': '', 'nickname': '前端开荒牛', 'headIcon': 'https://static.dei2.com/plugins_admin/img/upload_dacaabf0a8bd16a5d24bc2feb7f0dbdc.png', 'lastLoginTime': '1526375120974', 'lastLoginIp': '', 'birthday': '1515922620952', 'gender': 1, 'website': '', 'status': 1, 'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTI2OTc0NzY3LCJleHAiOjE1Mjc1Nzk1Njd9.20AF6k9X9wR-_C4ZmRLcY5JWGWkDWAWNLkixbH8mu14', 'plugins': '', 'role': 3, 'createdAt': '2018-01-14T09:55:13.000Z', 'updatedAt': '2018-05-15T09:05:20.000Z' },
     needlessLogin: ['Login', 'Register', 'Forget', 'ActivityPreview', 'ArticleList', 'ArticleView'] // 不需要登录的页面
   }
 })

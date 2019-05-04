@@ -42,13 +42,24 @@ export const HomeRouter = {
   path: '/',
   name: 'Home',
   meta: {
-    title: 'RQQ',
+    title: 'QY',
     index: 1
   },
   components: {
     HomeRouter: () => import('../components/Home.vue')
   },
   children: [
+    {
+      path: '/index',
+      name: 'Index',
+      meta: {
+        title: 'QY',
+        index: 1
+      },
+      components: {
+        ContentRouter: () => import('../components/main/Index.vue')
+      }
+    },
     {
       path: '/activity',
       redirect: '/activity/index'
