@@ -54,3 +54,9 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+console.log('......', navigator.serviceWorker)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js', { scope: '/' })
+  })
+}

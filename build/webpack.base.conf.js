@@ -4,6 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const vuxLoader = require('vux-loader')
+const WorkboxPlugin = require('workbox-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -28,6 +29,7 @@ let webpackConfig = {
       '@': resolve('src'),
     }
   },
+  plugins: [new WorkboxPlugin.InjectManifest(config.workbox)],
   module: {
     rules: [
       ...(config.dev.useEslint ? [{
