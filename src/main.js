@@ -11,6 +11,7 @@ import mixins from './mixins'
 import VueNavigation from 'vue-navigation'
 import utils from './utils/index'
 import { WechatPlugin, AjaxPlugin, ToastPlugin } from 'vux'
+import 'vue-slider-component/theme/default.css'
 
 Vue.use(WechatPlugin)
 
