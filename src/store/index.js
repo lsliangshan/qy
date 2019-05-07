@@ -80,6 +80,8 @@ const store = new Vuex.Store({
       femaleAvatar: '/static/images/avatar_female_1.jpg'
     },
     requestInfo: {
+      baseUrl: 'http://192.168.0.103:3000',
+      create: '/qy/index/create'
     },
     isLoading: false, // 页面是否在加载中
     loginInfo: { 'username': 'ls', 'phonenum': '18000000001', 'email': '', 'nickname': '前端开荒牛', 'headIcon': 'https://static.dei2.com/plugins_admin/img/upload_dacaabf0a8bd16a5d24bc2feb7f0dbdc.png', 'lastLoginTime': '1526375120974', 'lastLoginIp': '', 'birthday': '1515922620952', 'gender': 1, 'website': '', 'status': 1, 'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTI2OTc0NzY3LCJleHAiOjE1Mjc1Nzk1Njd9.20AF6k9X9wR-_C4ZmRLcY5JWGWkDWAWNLkixbH8mu14', 'plugins': '', 'role': 3, 'createdAt': '2018-01-14T09:55:13.000Z', 'updatedAt': '2018-05-15T09:05:20.000Z' },

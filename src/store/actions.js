@@ -40,9 +40,9 @@ const querystring = require('querystring')
 const instance = axios.create({
   timeout: 3000
 })
-const noop = function () {}
+const noop = function () { }
 export const actions = {
-  async [types.LOGIN] ({commit, state}, data) {
+  async [types.LOGIN] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -68,7 +68,7 @@ export const actions = {
       error(loginData)
     }
   },
-  async [types.REGISTER] ({commit, state}, data) {
+  async [types.REGISTER] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -94,7 +94,7 @@ export const actions = {
       error(registerData)
     }
   },
-  [types.AJAX] ({commit, state}, data) {
+  [types.AJAX] ({ commit, state }, data) {
     return new Promise((resolve, reject) => {
       let params = Object.assign({}, data)
       if (params.url === '') {
@@ -102,10 +102,10 @@ export const actions = {
       }
       // 自动添加token,phonenum
       if (!params.data.token) {
-        params.data.token = state.loginInfo.token
+        params.data.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTU1Njk3MjQ0LCJleHAiOjE1NTYzMDIwNDR9.LFLLF169rRiTOVE9XFBtU17s-b7CA_9-UTLBWdEseYw' || state.loginInfo.token
       }
       if (!params.data.phonenum) {
-        params.data.phonenum = state.loginInfo.phonenum
+        params.data.phonenum = '18000000000' || state.loginInfo.phonenum
       }
       instance({
         method: params.method || 'post',
@@ -126,7 +126,54 @@ export const actions = {
       })
     })
   },
-  [types.AJAX2] ({commit, state}, data) {
+  [types.AJAX_FORM] ({ state }, data) {
+    return new Promise((resolve, reject) => {
+      let params = Object.assign({}, data)
+      if (params.url === '') {
+        reject(new Error('url不能为空'))
+      }
+      let formData = new FormData()
+      formData.append('file', params.data.file)
+      if (params.data.hasOwnProperty('file')) {
+        delete params.data.file
+      }
+      for (let p in params.data) {
+        if (params.data.hasOwnProperty(p)) {
+          formData.append(p, params.data[p])
+        }
+      }
+      // 自动添加token,phonenum
+      if (!params.data.token) {
+        formData.append('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTU1Njk3MjQ0LCJleHAiOjE1NTYzMDIwNDR9.LFLLF169rRiTOVE9XFBtU17s-b7CA_9-UTLBWdEseYw')
+        // params.data.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoibHMifSwiaWF0IjoxNTU1Njk3MjQ0LCJleHAiOjE1NTYzMDIwNDR9.LFLLF169rRiTOVE9XFBtU17s-b7CA_9-UTLBWdEseYw' || state.loginInfo.token
+      }
+      if (!params.data.phonenum) {
+        formData.append('phonenum', '18000000000')
+        // params.data.phonenum = '18000000000' || state.loginInfo.phonenum
+      }
+      instance({
+        method: params.method || 'post',
+        baseURL: params.baseUrl || state.requestInfo.baseUrl,
+        url: params.url,
+        data: formData,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((res) => {
+        if (res.config) {
+          delete res.config
+        }
+        if (res.status === 200) {
+          resolve(res.data)
+        } else {
+          reject(res)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  [types.AJAX2] ({ commit, state }, data) {
     return new Promise((resolve, reject) => {
       let params = Object.assign({}, data)
       if (params.url === '') {
@@ -152,7 +199,7 @@ export const actions = {
     })
   },
   // 获取用户信息
-  async [types.GET_USER_INFO] ({commit, state}, data) {
+  async [types.GET_USER_INFO] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -179,7 +226,7 @@ export const actions = {
     }
   },
   // 更新用户信息
-  async [types.UPDATE_USER_INFO] ({commit, state}, data) {
+  async [types.UPDATE_USER_INFO] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -206,7 +253,7 @@ export const actions = {
     }
   },
   // 修改密码
-  async [types.MODIFY_PASSWORD] ({commit, state}, data) {
+  async [types.MODIFY_PASSWORD] ({ commit, state }, data) {
     let callback = noop
     let error = noop
     if (data.callback) {
@@ -251,7 +298,7 @@ export const actions = {
   //   }
   //   state.socket.client.emit(state.socket.event, _data)
   // },
-  async [types.SEND_MESSAGE] ({commit, state}, data) {
+  async [types.SEND_MESSAGE] ({ commit, state }, data) {
     let _from = {
       phonenum: state.loginInfo.phonenum,
       username: state.loginInfo.username,

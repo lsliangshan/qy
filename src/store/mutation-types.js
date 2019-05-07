@@ -75,5 +75,7 @@ export const COUNT_MESSAGE = 'COUNT_MESSAGE'
 // AJAX请求，=> Promise1
 export const AJAX = 'AJAX'
 
+export const AJAX_FORM = 'AJAX_FORM'
+
 // AJAX请求, 不需要登录状态的请求
 export const AJAX2 = 'AJAX2'
