@@ -58,7 +58,8 @@
                       title="新建"
                       :show-bottom-border="false"
                       @on-click-left="closeFormPopup"></popup-header> -->
-        <div class="popup_body">
+        <div class="popup_body"
+             v-if="showFormPopup">
           <form-popup :src="imgSrc"
                       :is-ios="isIos"></form-popup>
         </div>
