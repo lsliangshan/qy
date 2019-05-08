@@ -1,232 +1,85 @@
 <template>
-  <div id="app"
-       @touchmove="touchmove">
-    <div class="home_router_container">
-      <!--<transition :name="transitionName">-->
-      <!--<router-view name="HomeRouter"></router-view>-->
-      <!--</transition>-->
-      <!--<transition :name="transitionName" :css="!isBack || (isBack && !isTouchMove)">-->
-      <!--<keep-alive>-->
-      <!--<router-view name="HomeRouter" class="Router" v-if="$route.meta.keepAlive"></router-view>-->
-      <!--</keep-alive>-->
-      <!--</transition>-->
+  <!-- App -->
+  <f7-app :params="f7params">
 
-      <!--<transition :name="transitionName" :css="!isBack || (isBack && !isTouchMove)">-->
-      <!--<router-view name="HomeRouter" class="Router" v-if="!$route.meta.keepAlive"></router-view>-->
-      <!--</transition>-->
+    <!-- Statusbar -->
+    <f7-statusbar></f7-statusbar>
 
-      <transition :name="transitionName"
-                  :css="cssFlag">
-        <navigation>
-          <router-view name="HomeRouter"
-                       class="Router"></router-view>
-        </navigation>
-      </transition>
-    </div>
+    <!-- Left Panel -->
+    <f7-panel left reveal theme-dark>
+      <f7-view url="/panel-left/"></f7-view>
+    </f7-panel>
 
-    <all-svg></all-svg>
+    <!-- Right Panel -->
+    <f7-panel right cover theme-dark>
+      <f7-view url="/panel-right/"></f7-view>
+    </f7-panel>
 
-    <loading v-model="isLoading"></loading>
-  </div>
+    <!-- Main View -->
+    <f7-view id="main-view" url="/" main class="safe-areas"></f7-view>
+
+    <!-- Popup -->
+    <f7-popup id="popup">
+      <f7-view>
+        <f7-page>
+          <f7-navbar title="Popup">
+            <f7-nav-right>
+              <f7-link popup-close>Close</f7-link>
+            </f7-nav-right>
+          </f7-navbar>
+          <f7-block>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, architecto. Cupiditate laudantium rem nesciunt numquam, ipsam. Voluptates omnis, a inventore atque ratione aliquam. Omnis iusto nemo quos ullam obcaecati, quod.</f7-block>
+        </f7-page>
+      </f7-view>
+    </f7-popup>
+
+    <!-- Login Screen -->
+    <f7-login-screen id="login-screen">
+      <f7-view>
+        <f7-page login-screen>
+          <f7-login-screen-title>Login</f7-login-screen-title>
+          <f7-list form>
+            <f7-list-input
+              label="Username"
+              name="username"
+              placeholder="Username"
+              type="text"
+            />
+            <f7-list-input
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Password"
+            />
+          </f7-list>
+          <f7-list>
+            <f7-list-button title="Sign In" login-screen-close></f7-list-button>
+            <f7-block-footer>
+              <p>Click Sign In to close Login Screen</p>
+            </f7-block-footer>
+          </f7-list>
+        </f7-page>
+      </f7-view>
+    </f7-login-screen>
+
+  </f7-app>
 </template>
 
 <script>
-import { Loading } from 'vux'
+// Import Routes
+import routes from './routes.js'
+
 export default {
-  name: 'app',
-  data () {
+  data() {
     return {
-      transitionName: 'slide-left',
-      isBack: false,
-      navigationType: '',
-      isTouchMove: false,
-      touchMoveTimeout: null
+      // Framework7 parameters here
+      f7params: {
+        id: 'io.framework7.testapp', // App bundle ID
+        name: 'Framework7', // App name
+        theme: 'auto', // Automatic theme detection
+        // App routes
+        routes: routes,
+      },
     }
-  },
-  computed: {
-    isLoading () {
-      return this.$store.state.isLoading
-    },
-    cssFlag () {
-      if (this.navigationType === 'forward' || this.navigationType === 'back') {
-        return !this.isTouchMove
-      } else {
-        return false
-      }
-    }
-  },
-  created () {
-    // this.$http.get('http://grayconfig.zhaopin.com/grayconfig/cmsappversion/getVersionGroup').then(({data}) => {
-    //   console.log('........', data)
-    // })
-  },
-  mounted () {
-    const that = this
-    this.$navigation.on('forward', (to, from) => {
-      // alert('forward')
-      that.navigationType = 'forward'
-      that.transitionName = 'slide-left'
-    })
-    this.$navigation.on('back', (to, from) => {
-      // alert('back')
-      that.navigationType = 'back'
-      that.transitionName = 'slide-right'
-    })
-  },
-  methods: {
-    touchmove (e) {
-      this.isTouchMove = true
-    }
-  },
-  watch: {
-    '$route' (to, from) {
-      if (!from.meta.index || (to.meta.index === from.meta.index)) {
-        this.transitionName = ''
-      }
-      setTimeout(() => {
-        this.isTouchMove = false
-      }, 1)
-      // let isBack = this.$router.isBack // 监听路由变化时的状态为前进还是后退
-      // this.isBack = (to.meta.index < from.meta.index)
-      // if (isBack) {
-      //   this.transitionName = 'slide-right'
-      //   // from.meta.keepAlive = false
-      //   // to.meta.keepAlive = true
-      //   // console.log('退后不缓存from' + JSON.stringify(from.path))
-      //   // console.log('退后缓存to' + JSON.stringify(to.path))
-      // } else {
-      //   from.meta.keepAlive = true
-      //   to.meta.keepAlive = false
-      //   // console.log('前进缓存from' + JSON.stringify(from.path))
-      //   // console.log('前进不缓存to' + JSON.stringify(to.path))
-      //   if (!from.meta.index) {
-      //     this.transitionName = ''
-      //   } else {
-      //     if (to.meta.index > from.meta.index) {
-      //       this.transitionName = 'slide-left'
-      //     } else {
-      //       this.transitionName = 'slide-right'
-      //     }
-      //   }
-      // }
-      // this.$router.isBack = false
-    }
-  },
-  components: {
-    AllSvg: () => import('./components/svgs.vue'),
-    Loading
   }
 }
 </script>
-
-<style lang="less">
-@import "~vux/src/styles/reset.less";
-* {
-  margin: 0;
-  padding: 0;
-  outline: none;
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-}
-*:not(input, textarea) {
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  user-select: none;
-}
-html,
-body {
-  height: 100%;
-}
-body {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  background-color: #fbf9fe;
-}
-#app {
-  position: fixed;
-  left: 0;
-  top: 0;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  background-color: #fbf9fe;
-}
-.home_router_container {
-  width: 100%;
-  height: 100%;
-  /*height: calc(~"100% - 53px");*/
-}
-a {
-  text-decoration: none;
-}
-.weui-cells:after {
-  border-bottom: 1px solid #f5f5f5 !important;
-}
-.weui-cells:before {
-  border-top: none !important;
-}
-
-.gap_12 {
-  width: 100%;
-  height: 12px;
-}
-.gap_24 {
-  width: 100%;
-  height: 24px;
-}
-.pen {
-  pointer-events: none;
-}
-.ml8 {
-  margin-left: 8px;
-}
-.custom_active:active {
-  opacity: 0.7;
-}
-
-.slide-right-enter-active,
-.slide-right-leave-active,
-.slide-left-enter-active,
-.slide-left-leave-active {
-  will-change: transform;
-  transition: all 500ms;
-  position: absolute;
-}
-.slide-right-enter {
-  /*opacity: 0;*/
-  transform: translate3d(-100%, 0, 0);
-}
-.slide-right-leave-active {
-  /*opacity: 0;*/
-  transform: translate3d(100%, 0, 0);
-}
-.slide-left-enter {
-  /*opacity: 0;*/
-  transform: translate3d(100%, 0, 0);
-}
-.slide-left-leave-active {
-  /*opacity: 0;*/
-  transform: translate3d(-100%, 0, 0);
-}
-
-/*.slide-right-enter-active, .slide-right-leave-active, .slide-left-enter-active, .slide-left-leave-active {*/
-/*transition: transform .4s cubic-bezier(1.0, 0.5, 0.8, 1.0);*/
-/*}*/
-/*!*.slide-right-enter {*!*/
-/*!*transform: translate3d(0%, 0, 0);*!*/
-/*!*}*!*/
-/*!*.slide-left-leave {*!*/
-/*!*transform: translate3d(0%, 0, 0);*!*/
-/*!*}*!*/
-/*.slide-left-enter {*/
-/*transform: translate3d(-100%, 0, 0);*/
-/*}*/
-/*.slide-right-leave {*/
-/*transform: translate3d(100%, 0, 0);*/
-/*}*/
-</style>
