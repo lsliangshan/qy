@@ -502,6 +502,7 @@ export default {
             blurred: d
           })
         })
+        alert('发送成功')
         console.log('created data: ', createdData)
         resolve(createdData)
       })

@@ -80,7 +80,7 @@ const store = new Vuex.Store({
       femaleAvatar: '/static/images/avatar_female_1.jpg'
     },
     requestInfo: {
-      baseUrl: 'http://192.168.0.103:3000',
+      baseUrl: 'http://192.168.0.101:3000',
       create: '/qy/index/create'
     },
     isLoading: false, // 页面是否在加载中
