@@ -1,6 +1,7 @@
 <template>
   <!-- App -->
   <f7-app :params="f7params"
+          :theme-dark="themDark"
           :class="'color-theme-' + activeThemeColor">
 
     <!-- Statusbar -->
@@ -74,6 +75,39 @@
       </f7-view>
     </f7-login-screen>
 
+    <!-- <f7-fab position="right-bottom"
+            slot="fixed"
+            color="green">
+      <f7-icon ios="f7:gear"
+               aurora="f7:gear"
+               md="material:gear"></f7-icon>
+      <f7-icon ios="f7:close"
+               aurora="f7:close"
+               md="material:close"></f7-icon>
+      <f7-fab-buttons position="center">
+        <f7-fab-button>1</f7-fab-button>
+        <f7-fab-button>2</f7-fab-button>
+        <f7-fab-button>3</f7-fab-button>
+        <f7-fab-button>4</f7-fab-button>
+      </f7-fab-buttons>
+
+    </f7-fab> -->
+
+    <f7-fab position="right-bottom"
+            slot="fixed"
+            color="orange">
+      <f7-icon ios="f7:add"
+               aurora="f7:add"
+               md="material:add"></f7-icon>
+      <f7-icon ios="f7:close"
+               aurora="f7:close"
+               md="material:close"></f7-icon>
+      <f7-fab-buttons position="top">
+        <f7-fab-button label="Action 1">1</f7-fab-button>
+        <f7-fab-button label="Action 2">2</f7-fab-button>
+      </f7-fab-buttons>
+    </f7-fab>
+
   </f7-app>
 </template>
 
@@ -96,9 +130,18 @@
             closeButton: true,
           }
         },
-        blocks: [],
-        themeColors: ['red', 'green', 'blue', 'pink', 'yellow', 'orange', 'purple', 'deeppurple', 'lightblue', 'teal', 'lime', 'deeporange', 'gray', 'white', 'black'],
-        activeThemeColor: 'red'
+        blocks: []
+      }
+    },
+    computed: {
+      store () {
+        return this.$store
+      },
+      themDark () {
+        return this.store.state.themDark
+      },
+      activeThemeColor () {
+        return this.store.state.activeThemeColor
       }
     },
     created () {
