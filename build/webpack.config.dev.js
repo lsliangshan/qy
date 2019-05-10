@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const path = require('path');
 
-function resolvePath(dir) {
+function resolvePath (dir) {
   return path.join(__dirname, '..', dir);
 }
 
@@ -29,6 +29,7 @@ module.exports = {
   },
   devServer: {
     hot: true,
+    host: '10.2.5.98',
     open: true,
     compress: true,
     contentBase: '/www/',

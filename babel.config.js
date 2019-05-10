@@ -8,6 +8,16 @@ module.exports = {
     }]
   ],
   "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "absoluteRuntime": false,
+        "corejs": false,
+        "helpers": true,
+        "regenerator": true,
+        "useESModules": false
+      }
+    ],
     "transform-vue-jsx",
     // "@babel/plugin-transform-runtime",
     "@babel/plugin-syntax-dynamic-import"
