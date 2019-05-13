@@ -31,12 +31,41 @@
  **                                              不见满街漂亮妹，哪个归得程序员？
  */
 /**
- * Created by liangshan on 2017/7/13.
+ * Created by liangshan on 2018/7/24.
  */
+const KitUtil = (function () {
+  const _S4 = function () {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+  }
+  const _getUUID = function (prefix) {
+    return ((prefix || '') + _S4() + _S4() + '-' + _S4() + '-' + _S4() + '-' + _S4() + '-' + _S4() + _S4() + _S4())
+  }
+  const _typeof = function (obj) {
+    return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
+  }
+  const _isPlainObject = function (obj) {
+    return _typeof(obj) === 'object'
+  }
+  const _isString = function (obj) {
+    return typeof (obj) === 'string'
+  }
+  const _isNonEmptyArray = function (obj = []) {
+    return obj && obj.length > 0 && Array.isArray(obj) && typeof obj !== 'undefined'
+  }
+  const _isObject = function (item) {
+    return (item && typeof item === 'object' && !Array.isArray(item))
+  }
+  const _isEmptyObject = function (obj) {
+    return Object.keys(obj).length === 0 && obj.constructor === Object
+  }
+  return {
+    getUUID: _getUUID,
+    isPlainObject: _isPlainObject,
+    isString: _isString,
+    isNonEmptyArray: _isNonEmptyArray,
+    isObject: _isObject,
+    isEmptyObject: _isEmptyObject
+  }
+})()
 
-// >>>> mutations:
-export const SET_ACTIVE_THEME_COLOR = 'SET_ACTIVE_THEME_COLOR'
-
-export const SET_THEME_DARK = 'SET_THEME_DARK'
-
-export const SET_OS_THEME = 'SET_OS_THEME'
+export default KitUtil

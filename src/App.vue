@@ -115,21 +115,24 @@
 <script>
 // Import Routes
 import routes from './routes.js'
+import * as types from './store/mutation-types'
+import { StorageUtil } from './utils/index'
 
 export default {
   data () {
+    let osTheme = localStorage.getItem('local-os-theme') || 'ios'
     return {
       // Framework7 parameters here
       f7params: {
         id: 'io.framework7.testapp', // App bundle ID
         name: 'Framework7', // App name
-        theme: 'ios', // Automatic theme detection
+        theme: osTheme, // Automatic theme detection
         // App routes
         routes: routes,
         toast: {
           closeTimeout: 3000,
           closeButton: true,
-        }
+        },
       },
       blocks: []
     }
@@ -141,14 +144,16 @@ export default {
     themeDark () {
       return this.store.state.themeDark
     },
+    localStorageKeys () {
+      return this.store.state.localStorageKeys
+    },
     activeThemeColor () {
       return this.store.state.activeThemeColor
     }
   },
-  created () {
-    this.blocks = new Array(40).fill(Math.floor(Math.random() * 100) + ', Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, architecto. Cupiditate laudantium rem nesciunt numquam, ipsam. Voluptates omnis, a inventore atque ratione aliquam. Omnis iusto nemo quos ullam obcaecati, quod.')
-    this.blocks.forEach((item, index) => {
-      item = (index + 1) + ': ' + item
+  async created () {
+    this.store.commit(types.SET_OS_THEME, {
+      osTheme: this.f7params.theme
     })
   },
   methods: {
@@ -157,6 +162,16 @@ export default {
         setTimeout(() => {
           resolve(true)
         }, ts)
+      })
+    },
+    getOsTheme () {
+      return new Promise(async (resolve) => {
+        let localOsTheme = await StorageUtil.getItem(this.localStorageKeys.osTheme)
+        if (!localOsTheme) {
+          resolve('ios')
+        } else {
+          resolve(localOsTheme || 'ios')
+        }
       })
     },
     async refresh (evt, done) {

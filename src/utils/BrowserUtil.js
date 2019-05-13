@@ -31,12 +31,24 @@
  **                                              不见满街漂亮妹，哪个归得程序员？
  */
 /**
- * Created by liangshan on 2017/7/13.
+ * Created by liangshan on 2018/7/24.
  */
+const BrowserUtil = (function () {
+  const _isPc = function () {
+    let sUserAgent = navigator.userAgent.toLowerCase()
+    let bIsIpad = sUserAgent.match(/ipad/i)
+    let bIsIphoneOs = sUserAgent.match(/iphone os/i)
+    let bIsMidp = sUserAgent.match(/midp/i)
+    let bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i)
+    let bIsUc = sUserAgent.match(/ucweb/i)
+    let bIsAndroid = sUserAgent.match(/android/i)
+    let bIsCE = sUserAgent.match(/windows ce/i)
+    let bIsWM = sUserAgent.match(/windows mobile/i)
+    return !(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM)
+  }
+  return {
+    isPc: _isPc
+  }
+})()
 
-// >>>> mutations:
-export const SET_ACTIVE_THEME_COLOR = 'SET_ACTIVE_THEME_COLOR'
-
-export const SET_THEME_DARK = 'SET_THEME_DARK'
-
-export const SET_OS_THEME = 'SET_OS_THEME'
+export default BrowserUtil

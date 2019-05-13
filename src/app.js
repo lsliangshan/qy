@@ -6,6 +6,8 @@ import Vuex from 'vuex';
 
 import store from './store';
 
+import mixins from './mixins';
+
 // Import F7
 import Framework7 from 'framework7/framework7.esm.bundle.js';
 
@@ -21,6 +23,9 @@ import AppStyles from './css/app.css';
 
 // Import App Component
 import App from './app.vue';
+
+// register global mixins.
+Vue.mixin(mixins)
 
 Vue.use(Vuex)
 

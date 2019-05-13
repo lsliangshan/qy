@@ -10,8 +10,7 @@
     </f7-block-title>
     <f7-list>
       <f7-list-item class="fs14"
-                    title="主题颜色"
-                    href="#">
+                    title="主题颜色">
         <f7-link class="fs14"
                  slot="after"
                  title="主题颜色"
@@ -22,10 +21,24 @@
         </f7-link>
       </f7-list-item>
       <f7-list-item class="fs14"
-                    title="夜间模式"
-                    href="#">
+                    title="夜间模式">
         <f7-toggle :checked="themeDark"
                    @toggle:change="toggleThemeDark"></f7-toggle>
+      </f7-list-item>
+      <f7-list-item class="fs14"
+                    title="风格主题"
+                    smart-select
+                    :smart-select-params="{openIn: 'popover', closeOnSelect: true, on: {
+                      closed: changeOsTheme
+                    }}"
+                    link="#">
+        <select name="osTheme"
+                slot="after">
+          <option v-for="(item, index) in allOsThemes"
+                  :key="index"
+                  :value="item.value"
+                  :selected="item.value === osTheme">{{item.label}}</option>
+        </select>
       </f7-list-item>
     </f7-list>
 
@@ -62,6 +75,9 @@ export default {
     store () {
       return this.$store
     },
+    allOsThemes () {
+      return this.store.state.allOsThemes
+    },
     themeColors () {
       return this.store.state.themeColors
     },
@@ -70,6 +86,9 @@ export default {
     },
     themeDark () {
       return this.store.state.themeDark
+    },
+    osTheme () {
+      return this.store.state.osTheme
     }
   },
   methods: {
@@ -83,13 +102,20 @@ export default {
       this.$f7.popover.open('.settings-theme-color-select')
     },
     closeFab () {
-      console.log('....')
       this.$f7.fab.close('#setting_fab')
     },
     toggleThemeDark (e) {
       this.store.commit(types.SET_THEME_DARK, {
         themeDark: e
       })
+    },
+    changeOsTheme (e) {
+      // console.log(this.$f7route)
+      let selectedTheme = this.allOsThemes[Number(e.selectEl.selectedIndex)].value
+      this.store.commit(types.SET_OS_THEME, {
+        osTheme: selectedTheme
+      })
+      location.reload()
     }
   }
 }

@@ -35,6 +35,7 @@
  */
 
 import * as types from './mutation-types'
+import { StorageUtil } from '../utils/index'
 
 export const mutations = {
   [types.SET_ACTIVE_THEME_COLOR] (state, data) {
@@ -42,5 +43,9 @@ export const mutations = {
   },
   [types.SET_THEME_DARK] (state, data) {
     state.themeDark = data.themeDark
+  },
+  [types.SET_OS_THEME] (state, data) {
+    state.osTheme = data.osTheme
+    StorageUtil.setItem(state.localStorageKeys.osTheme, data.osTheme)
   }
 }

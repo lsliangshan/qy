@@ -31,12 +31,25 @@
  **                                              不见满街漂亮妹，哪个归得程序员？
  */
 /**
- * Created by liangshan on 2017/7/13.
+ * Created by liangshan on 2018/7/24.
  */
+const RouterUtil = (function () {
+  const _title = function (title) {
+    document.title = (title || '智愚')
+  }
+  const _formatUrlParams = function (args) {
+    let s = []
+    for (let k in args) {
+      if (args.hasOwnProperty(k)) {
+        s.push(k + '=' + args[k])
+      }
+    }
+    return s.join('&')
+  }
+  return {
+    title: _title,
+    formatUrlParams: _formatUrlParams
+  }
+})()
 
-// >>>> mutations:
-export const SET_ACTIVE_THEME_COLOR = 'SET_ACTIVE_THEME_COLOR'
-
-export const SET_THEME_DARK = 'SET_THEME_DARK'
-
-export const SET_OS_THEME = 'SET_OS_THEME'
+export default RouterUtil

@@ -1,12 +1,15 @@
 <template>
-  <f7-page hide-bars-on-scroll>
+  <f7-page hide-bars-on-scroll
+           ptr
+           :ptr-distance="50"
+           @ptr:refresh="refresh">
     <f7-navbar>
       <f7-nav-left>
         <f7-link icon-if-ios="f7:menu"
                  icon-if-md="material:menu"
                  panel-open="left"></f7-link>
       </f7-nav-left>
-      <f7-nav-title>My App</f7-nav-title>
+      <!-- <f7-nav-title>My App</f7-nav-title> -->
       <f7-nav-right>
         <f7-link icon-if-ios="f7:waterdrop_fill"
                  icon-if-md="material:waterdrop_fill"
@@ -70,7 +73,7 @@
         </div>
       </f7-card-content>
     </f7-card> -->
-    <f7-block>
+    <!-- <f7-block>
       <p>Here is your blank Framework7 app. Let's see what we have here.</p>
     </f7-block>
     <f7-block-title>Navigation</f7-block-title>
@@ -121,7 +124,20 @@
                     title="Dynamic Route"></f7-list-item>
       <f7-list-item link="/load-something-that-doesnt-exist/"
                     title="Default Route (404)"></f7-list-item>
-    </f7-list>
+    </f7-list> -->
+    <!-- <f7-photo-browser :photos="imgsArr"
+                      theme="dark"
+                      type="popup"
+                      back-link-text="返回"
+                      ref="imagePreviewerRef"></f7-photo-browser> -->
+
+    <vue-waterfall-easy :imgsArr="imgsArr"
+                        srcKey="url"
+                        @scrollReachBottom="getData"
+                        :reachBottomDistance="15"
+                        @click="clickHandler">
+      <f7-preloader slot="loading"></f7-preloader>
+    </vue-waterfall-easy>
 
     <f7-popover class="theme-color-select">
       <div class="colors_container">
@@ -147,7 +163,7 @@
             slot="fixed">
       <f7-icon ios="f7:gear"
                aurora="f7:gear"
-               md="material:gear"></f7-icon>
+               md="material:settings"></f7-icon>
       <f7-icon ios="f7:close"
                aurora="f7:close"
                md="material:close"></f7-icon>
@@ -217,13 +233,22 @@
 <script>
 import * as types from '../store/mutation-types'
 import AppSettings from './settings.vue'
+import axios from 'axios'
+import vueWaterfallEasy from 'vue-waterfall-easy'
 export default {
   name: 'home',
   data () {
-    return {}
+    return {
+      showPreloader: true,
+      imgsArr: [],
+      group: 0,
+      pageIndex: 1,
+      photoBrowser: null
+    }
   },
   components: {
-    AppSettings
+    AppSettings,
+    vueWaterfallEasy
   },
   computed: {
     store () {
@@ -236,7 +261,42 @@ export default {
       return this.store.state.activeThemeColor
     }
   },
+  created () {
+    this.getData()
+  },
   methods: {
+    refresh (event, done) {
+      this.pageIndex = 1
+      this.getData()
+      setTimeout(() => {
+        done()
+      }, 2000)
+    },
+    getData () {
+      axios.get('../../static/mock/data.json?group=' + this.pageIndex) // 真实环境中，后端会根据参数group返回新的图片数组，这里我用一个惊呆json文件模拟
+        .then(res => {
+          if (this.imgsArr.length >= 200) {
+            this.showPreloader = false;
+            return;
+          }
+          if (this.pageIndex === 1) {
+            this.imgsArr = res.data
+          } else {
+            this.imgsArr = this.imgsArr.concat(res.data)
+          }
+          this.pageIndex++
+        })
+    },
+    clickHandler (e, { index, value }) {
+      e.preventDefault()
+      this.photoBrowser = this.$f7.photoBrowser.create({
+        photos: this.imgsArr,
+        type: 'standalone',
+        backLinkText: '返回',
+        theme: 'dark'
+      })
+      this.photoBrowser.open(Number(index))
+    },
     setActiveThemeColor (color) {
       this.store.commit(types.SET_ACTIVE_THEME_COLOR, {
         activeThemeColor: color

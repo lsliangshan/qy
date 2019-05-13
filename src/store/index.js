@@ -38,6 +38,7 @@ import Vuex from 'vuex'
 import * as actions from './actions'
 import * as mutations from './mutations'
 import * as getters from './getters'
+import routes from '../routes.js'
 // import moduleEntrance from './modules/moduleEntrance'
 // import moduleBaseData from './modules/moduleBaseData'
 // import moduleUserInfo from './modules/moduleUserInfo'
@@ -62,12 +63,24 @@ const store = new Vuex.Store({
     // moduleModal
   },
   state: {
+    AppName: 'QY',
     activeThemeColor: {
       label: '紫色',
       value: 'purple',
       color: '#9c27b0'
     },
     themeDark: false,
+    osTheme: 'md',
+    allOsThemes: [
+      {
+        label: 'ios',
+        value: 'ios'
+      },
+      {
+        label: 'md',
+        value: 'md'
+      }
+    ],
     themeColors: [
       {
         label: '红色',
@@ -146,7 +159,8 @@ const store = new Vuex.Store({
       }
     ],
     localStorageKeys: {
-      userInfo: 'user-info'
+      userInfo: 'user-info',
+      osTheme: 'local-os-theme'
     },
     eventHub: new Vue(),
     events: {
