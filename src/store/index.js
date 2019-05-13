@@ -62,8 +62,12 @@ const store = new Vuex.Store({
     // moduleModal
   },
   state: {
-    activeThemeColor: 'purple',
-    themDark: false,
+    activeThemeColor: {
+      label: '紫色',
+      value: 'purple',
+      color: '#9c27b0'
+    },
+    themeDark: false,
     themeColors: [
       {
         label: '红色',

@@ -1,8 +1,8 @@
 <template>
   <!-- App -->
   <f7-app :params="f7params"
-          :theme-dark="themDark"
-          :class="'color-theme-' + activeThemeColor">
+          :theme-dark="themeDark"
+          :class="'color-theme-' + activeThemeColor.value">
 
     <!-- Statusbar -->
     <f7-statusbar></f7-statusbar>
@@ -28,7 +28,8 @@
              class="safe-areas"></f7-view>
 
     <!-- Popup -->
-    <f7-popup id="popup">
+    <f7-popup id="popup"
+              class="test_popup">
       <f7-view>
         <f7-page ptr
                  @ptr:refresh="refresh"
@@ -112,66 +113,66 @@
 </template>
 
 <script>
-  // Import Routes
-  import routes from './routes.js'
+// Import Routes
+import routes from './routes.js'
 
-  export default {
-    data () {
-      return {
-        // Framework7 parameters here
-        f7params: {
-          id: 'io.framework7.testapp', // App bundle ID
-          name: 'Framework7', // App name
-          theme: 'ios', // Automatic theme detection
-          // App routes
-          routes: routes,
-          toast: {
-            closeTimeout: 3000,
-            closeButton: true,
-          }
-        },
-        blocks: []
-      }
-    },
-    computed: {
-      store () {
-        return this.$store
+export default {
+  data () {
+    return {
+      // Framework7 parameters here
+      f7params: {
+        id: 'io.framework7.testapp', // App bundle ID
+        name: 'Framework7', // App name
+        theme: 'ios', // Automatic theme detection
+        // App routes
+        routes: routes,
+        toast: {
+          closeTimeout: 3000,
+          closeButton: true,
+        }
       },
-      themDark () {
-        return this.store.state.themDark
-      },
-      activeThemeColor () {
-        return this.store.state.activeThemeColor
-      }
+      blocks: []
+    }
+  },
+  computed: {
+    store () {
+      return this.$store
     },
-    created () {
-      this.blocks = new Array(40).fill(Math.floor(Math.random() * 100) + ', Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, architecto. Cupiditate laudantium rem nesciunt numquam, ipsam. Voluptates omnis, a inventore atque ratione aliquam. Omnis iusto nemo quos ullam obcaecati, quod.')
-      this.blocks.forEach((item, index) => {
-        item = (index + 1) + ': ' + item
+    themeDark () {
+      return this.store.state.themeDark
+    },
+    activeThemeColor () {
+      return this.store.state.activeThemeColor
+    }
+  },
+  created () {
+    this.blocks = new Array(40).fill(Math.floor(Math.random() * 100) + ', Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, architecto. Cupiditate laudantium rem nesciunt numquam, ipsam. Voluptates omnis, a inventore atque ratione aliquam. Omnis iusto nemo quos ullam obcaecati, quod.')
+    this.blocks.forEach((item, index) => {
+      item = (index + 1) + ': ' + item
+    })
+  },
+  methods: {
+    sleep (ts = 2000) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(true)
+        }, ts)
       })
     },
-    methods: {
-      sleep (ts = 2000) {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve(true)
-          }, ts)
-        })
-      },
-      async refresh (evt, done) {
-        await this.sleep(3000)
-        this.blocks = new Array(10).fill(Math.floor(Math.random() * 100) + ', Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, architecto. Cupiditate laudantium rem nesciunt numquam, ipsam. Voluptates omnis, a inventore atque ratione aliquam. Omnis iusto nemo quos ullam obcaecati, quod.').concat(this.blocks)
-        let toast = this.$f7.toast.create({
-          // icon: this.$f7.theme === 'ios' ? '<i class="f7-icons">check</i>' : '<i class="material-icons">check</i>',
-          text: '刷新成功',
-          position: 'top'
-        })
-        toast.open()
-        done()
-      },
-      pullToRefreshDone (evt) {
+    async refresh (evt, done) {
+      await this.sleep(3000)
+      this.blocks = new Array(10).fill(Math.floor(Math.random() * 100) + ', Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, architecto. Cupiditate laudantium rem nesciunt numquam, ipsam. Voluptates omnis, a inventore atque ratione aliquam. Omnis iusto nemo quos ullam obcaecati, quod.').concat(this.blocks)
+      let toast = this.$f7.toast.create({
+        // icon: this.$f7.theme === 'ios' ? '<i class="f7-icons">check</i>' : '<i class="material-icons">check</i>',
+        text: '刷新成功',
+        position: 'top'
+      })
+      toast.open()
+      done()
+    },
+    pullToRefreshDone (evt) {
 
-      }
     }
   }
+}
 </script>

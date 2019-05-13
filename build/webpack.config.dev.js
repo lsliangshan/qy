@@ -29,7 +29,7 @@ module.exports = {
   },
   devServer: {
     hot: true,
-    host: '10.2.5.98',
+    host: '192.168.0.103',
     open: true,
     compress: true,
     contentBase: '/www/',
