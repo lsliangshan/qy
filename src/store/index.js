@@ -64,13 +64,14 @@ const store = new Vuex.Store({
   },
   state: {
     AppName: 'QY',
-    activeThemeColor: {
+    defaultColorTheme: {
       label: '紫色',
       value: 'purple',
       color: '#9c27b0'
     },
-    themeDark: false,
-    osTheme: 'md',
+    osTheme: '',
+    userSettings: {
+    },
     allOsThemes: [
       {
         label: 'ios',
@@ -160,7 +161,8 @@ const store = new Vuex.Store({
     ],
     localStorageKeys: {
       userInfo: 'user-info',
-      osTheme: 'local-os-theme'
+      osTheme: 'local-os-theme',
+      userSettings: 'local-user-settings'
     },
     eventHub: new Vue(),
     events: {

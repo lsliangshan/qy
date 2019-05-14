@@ -2,7 +2,7 @@
   <!-- App -->
   <f7-app :params="f7params"
           :theme-dark="themeDark"
-          :class="'color-theme-' + activeThemeColor.value">
+          :class="'color-theme-' + (activeThemeColor ? activeThemeColor.value : defaultColorTheme.value)">
 
     <!-- Statusbar -->
     <f7-statusbar></f7-statusbar>
@@ -113,81 +113,113 @@
 </template>
 
 <script>
-// Import Routes
-import routes from './routes.js'
-import * as types from './store/mutation-types'
-import { StorageUtil } from './utils/index'
+  // Import Routes
+  import routes from './routes.js'
+  import * as types from './store/mutation-types'
+  import { StorageUtil } from './utils/index'
 
-export default {
-  data () {
-    let osTheme = localStorage.getItem('local-os-theme') || 'ios'
-    return {
-      // Framework7 parameters here
-      f7params: {
-        id: 'io.framework7.testapp', // App bundle ID
-        name: 'Framework7', // App name
-        theme: osTheme, // Automatic theme detection
-        // App routes
-        routes: routes,
-        toast: {
-          closeTimeout: 3000,
-          closeButton: true,
+  export default {
+    data () {
+      let osTheme = localStorage.getItem('local-os-theme')
+      return {
+        // Framework7 parameters here
+        f7params: {
+          id: 'io.framework7.testapp', // App bundle ID
+          name: 'Framework7', // App name
+          theme: osTheme, // Automatic theme detection
+          // App routes
+          routes: routes,
+          toast: {
+            closeTimeout: 3000,
+            closeButton: true,
+          },
         },
+        blocks: []
+      }
+    },
+    computed: {
+      store () {
+        return this.$store
       },
-      blocks: []
-    }
-  },
-  computed: {
-    store () {
-      return this.$store
+      defaultColorTheme () {
+        return this.store.state.defaultColorTheme
+      },
+      userSettings () {
+        return this.store.state.userSettings
+      },
+      themeDark () {
+        return this.store.state.userSettings.themeDark
+      },
+      localStorageKeys () {
+        return this.store.state.localStorageKeys
+      },
+      activeThemeColor () {
+        return this.store.state.userSettings.activeThemeColor
+      }
     },
-    themeDark () {
-      return this.store.state.themeDark
+    async created () {
+      await this.getUserSettings()
     },
-    localStorageKeys () {
-      return this.store.state.localStorageKeys
+    mounted () {
+      window.addEventListener('storage', this.storageHandler, false)
     },
-    activeThemeColor () {
-      return this.store.state.activeThemeColor
-    }
-  },
-  async created () {
-    this.store.commit(types.SET_OS_THEME, {
-      osTheme: this.f7params.theme
-    })
-  },
-  methods: {
-    sleep (ts = 2000) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve(true)
-        }, ts)
-      })
-    },
-    getOsTheme () {
-      return new Promise(async (resolve) => {
-        let localOsTheme = await StorageUtil.getItem(this.localStorageKeys.osTheme)
-        if (!localOsTheme) {
-          resolve('ios')
-        } else {
-          resolve(localOsTheme || 'ios')
+    methods: {
+      storageHandler (e) {
+        if (e.key === this.localStorageKeys.userSettings) {
+          this.store.commit(types.SET_USER_SETTINGS, {
+            userSettings: e.newValue || {}
+          })
+        } else if (e.key === this.localStorageKeys.osTheme) {
+          this.store.commit(types.SET_OS_THEME, {
+            osTheme: ''
+          })
+          location.reload()
         }
-      })
-    },
-    async refresh (evt, done) {
-      await this.sleep(3000)
-      this.blocks = new Array(10).fill(Math.floor(Math.random() * 100) + ', Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, architecto. Cupiditate laudantium rem nesciunt numquam, ipsam. Voluptates omnis, a inventore atque ratione aliquam. Omnis iusto nemo quos ullam obcaecati, quod.').concat(this.blocks)
-      let toast = this.$f7.toast.create({
-        // icon: this.$f7.theme === 'ios' ? '<i class="f7-icons">check</i>' : '<i class="material-icons">check</i>',
-        text: '刷新成功',
-        position: 'top'
-      })
-      toast.open()
-      done()
-    },
-    pullToRefreshDone (evt) {
+      },
+      getUserSettings () {
+        return new Promise(async resolve => {
+          let userSettings = await StorageUtil.getItem(this.localStorageKeys.userSettings)
+          userSettings = userSettings || {
+            activeThemeColor: this.defaultColorTheme,
+            themeDark: false
+          }
+          this.store.commit(types.SET_USER_SETTINGS, {
+            userSettings: userSettings
+          })
+          resolve(true)
+        })
+      },
+      sleep (ts = 2000) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(true)
+          }, ts)
+        })
+      },
+      getOsTheme () {
+        return new Promise(async (resolve) => {
+          let localOsTheme = await StorageUtil.getItem(this.localStorageKeys.osTheme)
+          if (!localOsTheme) {
+            resolve('ios')
+          } else {
+            resolve(localOsTheme || 'ios')
+          }
+        })
+      },
+      async refresh (evt, done) {
+        await this.sleep(3000)
+        this.blocks = new Array(10).fill(Math.floor(Math.random() * 100) + ', Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, architecto. Cupiditate laudantium rem nesciunt numquam, ipsam. Voluptates omnis, a inventore atque ratione aliquam. Omnis iusto nemo quos ullam obcaecati, quod.').concat(this.blocks)
+        let toast = this.$f7.toast.create({
+          // icon: this.$f7.theme === 'ios' ? '<i class="f7-icons">check</i>' : '<i class="material-icons">check</i>',
+          text: '刷新成功',
+          position: 'top'
+        })
+        toast.open()
+        done()
+      },
+      pullToRefreshDone (evt) {
 
+      }
     }
   }
-}
 </script>

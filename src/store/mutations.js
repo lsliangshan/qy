@@ -39,13 +39,23 @@ import { StorageUtil } from '../utils/index'
 
 export const mutations = {
   [types.SET_ACTIVE_THEME_COLOR] (state, data) {
-    state.activeThemeColor = data.activeThemeColor
+    state.userSettings.activeThemeColor = JSON.parse(JSON.stringify(data.activeThemeColor))
+    StorageUtil.setItem(state.localStorageKeys.userSettings, state.userSettings)
   },
   [types.SET_THEME_DARK] (state, data) {
-    state.themeDark = data.themeDark
+    state.userSettings.themeDark = data.themeDark
+    StorageUtil.setItem(state.localStorageKeys.userSettings, state.userSettings)
   },
   [types.SET_OS_THEME] (state, data) {
+    /**
+     * 修改osTheme需要重新加载页面，所以要独立于userSettings
+     */
     state.osTheme = data.osTheme
-    StorageUtil.setItem(state.localStorageKeys.osTheme, data.osTheme)
+    StorageUtil.setItem(state.localStorageKeys.osTheme, state.osTheme)
+  },
+  [types.SET_USER_SETTINGS] (state, data) {
+    state.userSettings = JSON.parse(JSON.stringify(data.userSettings))
+    console.log('set storage: ', data.userSettings)
+    StorageUtil.setItem(state.localStorageKeys.userSettings, state.userSettings)
   }
 }

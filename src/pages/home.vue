@@ -171,141 +171,151 @@
   </f7-page>
 </template>
 <style scoped>
-.fs14 {
-  font-size: 14px;
-}
-.theme-color-select {
-  max-height: 300px;
-}
-.colors_container {
-  width: 260px;
-  height: 260px;
-  padding: 10px;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-.color_item {
-  width: 50px;
-  height: 50px;
-  margin: 5px;
-  border: 1px solid #f5f5f5;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-.settings_container {
-  position: absolute;
-  height: calc(100% - 44px);
-  left: 0;
-  right: 0;
-  top: 44px;
-  bottom: 0;
-  background: #fff;
-  z-index: 1600;
-  border-radius: 5px 5px 0 0;
-  box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  font-size: 14px;
-}
-.active_theme_color {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #c8c8c8;
-}
-@media (min-width: 768px) {
-  .settings_container {
-    left: 20%;
-    width: 60%;
-    right: auto;
-    height: 80%;
-    top: auto;
+  .fs14 {
+    font-size: 14px;
   }
-}
+  .theme-color-select {
+    max-height: 300px;
+  }
+  .colors_container {
+    width: 260px;
+    height: 260px;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .color_item {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    border: 1px solid #f5f5f5;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .settings_container {
+    position: absolute;
+    height: calc(100% - 44px);
+    left: 0;
+    right: 0;
+    top: 44px;
+    bottom: 0;
+    background: #fff;
+    z-index: 1600;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    font-size: 14px;
+  }
+  .active_theme_color {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #c8c8c8;
+  }
+  @media (min-width: 768px) {
+    .settings_container {
+      left: 20%;
+      width: 60%;
+      right: auto;
+      height: 80%;
+      top: auto;
+    }
+  }
 </style>
 
 <script>
-import * as types from '../store/mutation-types'
-import AppSettings from './settings.vue'
-import axios from 'axios'
-import vueWaterfallEasy from 'vue-waterfall-easy'
-export default {
-  name: 'home',
-  data () {
-    return {
-      showPreloader: true,
-      imgsArr: [],
-      group: 0,
-      pageIndex: 1,
-      photoBrowser: null
-    }
-  },
-  components: {
-    AppSettings,
-    vueWaterfallEasy
-  },
-  computed: {
-    store () {
-      return this.$store
+  import * as types from '../store/mutation-types'
+  import AppSettings from './settings.vue'
+  import axios from 'axios'
+  import vueWaterfallEasy from 'vue-waterfall-easy'
+  export default {
+    name: 'home',
+    data () {
+      return {
+        showPreloader: true,
+        imgsArr: [],
+        group: 0,
+        pageIndex: 1,
+        pageSize: 30,
+        photoBrowser: null
+      }
     },
-    themeColors () {
-      return this.store.state.themeColors
+    components: {
+      AppSettings,
+      vueWaterfallEasy
     },
-    activeThemeColor () {
-      return this.store.state.activeThemeColor
-    }
-  },
-  created () {
-    this.getData()
-  },
-  methods: {
-    refresh (event, done) {
-      this.pageIndex = 1
+    computed: {
+      store () {
+        return this.$store
+      },
+      userSettings () {
+        return this.store.state.userSettings
+      },
+      themeColors () {
+        return this.store.state.themeColors
+      },
+      activeThemeColor () {
+        return this.userSettings.activeThemeColor
+      }
+    },
+    created () {
       this.getData()
-      setTimeout(() => {
-        done()
-      }, 2000)
     },
-    getData () {
-      axios.get('../../static/mock/data.json?group=' + this.pageIndex) // 真实环境中，后端会根据参数group返回新的图片数组，这里我用一个惊呆json文件模拟
-        .then(res => {
-          if (this.imgsArr.length >= 200) {
-            this.showPreloader = false;
-            return;
-          }
-          if (this.pageIndex === 1) {
-            this.imgsArr = res.data
-          } else {
-            this.imgsArr = this.imgsArr.concat(res.data)
-          }
-          this.pageIndex++
+    methods: {
+      async refresh (event, done) {
+        this.pageIndex = 1
+        await this.getData()
+        setTimeout(() => {
+          done()
+        }, 800)
+      },
+      getData () {
+        return new Promise(async (resolve) => {
+          await axios.get('../../static/mock/data.json?group=' + this.pageIndex) // 真实环境中，后端会根据参数group返回新的图片数组，这里我用一个惊呆json文件模拟
+            .then(res => {
+              if ((this.pageIndex !== 1) && (this.imgsArr.length >= 200)) {
+                // this.showPreloader = false;
+                // return;
+                this.imgsArr.splice(0, this.pageSize)
+              }
+              if (this.pageIndex === 1) {
+                this.imgsArr = res.data
+              } else {
+                this.imgsArr = this.imgsArr.concat(res.data)
+              }
+              this.pageIndex++
+              resolve(true)
+            }).catch(() => {
+              resolve(true)
+            })
         })
-    },
-    clickHandler (e, { index, value }) {
-      e.preventDefault()
-      this.photoBrowser = this.$f7.photoBrowser.create({
-        photos: this.imgsArr,
-        type: 'standalone',
-        backLinkText: '返回',
-        theme: 'dark'
-      })
-      this.photoBrowser.open(Number(index))
-    },
-    setActiveThemeColor (color) {
-      this.store.commit(types.SET_ACTIVE_THEME_COLOR, {
-        activeThemeColor: color
-      })
-    },
-    closeFab () {
-      console.log('close fab')
-      this.$f7.fab.close()
+      },
+      clickHandler (e, { index, value }) {
+        e.preventDefault()
+        this.photoBrowser = this.$f7.photoBrowser.create({
+          photos: this.imgsArr,
+          type: 'popup',
+          backLinkText: '返回',
+          theme: 'dark',
+          navbarOfText: 'in'
+        })
+        this.photoBrowser.open(Number(index))
+      },
+      setActiveThemeColor (color) {
+        this.store.commit(types.SET_ACTIVE_THEME_COLOR, {
+          activeThemeColor: color
+        })
+      },
+      closeFab () {
+        this.$f7.fab.close()
+      }
     }
   }
-}
 </script>
