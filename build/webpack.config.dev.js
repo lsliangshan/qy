@@ -29,12 +29,13 @@ module.exports = {
   },
   devServer: {
     hot: true,
-    host: '192.168.0.106',
+    host: '10.2.5.98',
+    // host: '192.168.0.106',
     open: true,
     compress: true,
     contentBase: '/www/',
     watchOptions: {
-      poll: true
+      poll: false
     }
   },
   module: {

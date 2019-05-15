@@ -5,8 +5,9 @@
            @ptr:refresh="refresh">
     <f7-navbar>
       <f7-nav-left>
-        <f7-link icon-if-ios="f7:menu"
-                 icon-if-md="material:menu"
+        <f7-link icon-f7="f7:bars"
+                 icon-ios="f7:bars"
+                 icon-md="material:menu"
                  panel-open="left"></f7-link>
       </f7-nav-left>
       <!-- <f7-nav-title>My App</f7-nav-title> -->
@@ -20,7 +21,11 @@
                 ref="toolbar"
                 class="custom_toolbar">
       <f7-link @click="closeFab">Left Link</f7-link>
-      <f7-link href="/settings/">Right Link</f7-link>
+      <f7-link href="/settings/">
+        <f7-icon ios="f7:gear"
+                 aurora="f7:gear"
+                 md="material:settings"></f7-icon>
+      </f7-link>
     </f7-toolbar>
 
     <!-- <f7-card expandable
@@ -178,184 +183,184 @@
   </f7-page>
 </template>
 <style scoped>
-.fs14 {
-  font-size: 14px;
-}
-.theme-color-select {
-  max-height: 300px;
-}
-.colors_container {
-  width: 260px;
-  height: 260px;
-  padding: 10px;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-.color_item {
-  width: 50px;
-  height: 50px;
-  margin: 5px;
-  border: 1px solid #f5f5f5;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-.settings_container {
-  position: absolute;
-  height: calc(100% - 44px);
-  left: 0;
-  right: 0;
-  top: 44px;
-  bottom: 0;
-  background: #fff;
-  z-index: 1600;
-  border-radius: 5px 5px 0 0;
-  box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  font-size: 14px;
-}
-.active_theme_color {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #c8c8c8;
-}
-@media (min-width: 768px) {
-  .settings_container {
-    left: 20%;
-    width: 60%;
-    right: auto;
-    height: 80%;
-    top: auto;
+  .fs14 {
+    font-size: 14px;
   }
-}
+  .theme-color-select {
+    max-height: 300px;
+  }
+  .colors_container {
+    width: 260px;
+    height: 260px;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .color_item {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    border: 1px solid #f5f5f5;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 
-.popup-create-close-handler {
-  height: 16px;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  top: 0;
-  background: #f00;
-  cursor: pointer;
-  z-index: 10;
-}
-.popup-create-close-handler:after {
-  content: "";
-  width: 36px;
-  height: 6px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -18px;
-  margin-top: -3px;
-  border-radius: 3px;
-  background: #666;
-}
+  .settings_container {
+    position: absolute;
+    height: calc(100% - 44px);
+    left: 0;
+    right: 0;
+    top: 44px;
+    bottom: 0;
+    background: #fff;
+    z-index: 1600;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    font-size: 14px;
+  }
+  .active_theme_color {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #c8c8c8;
+  }
+  @media (min-width: 768px) {
+    .settings_container {
+      left: 20%;
+      width: 60%;
+      right: auto;
+      height: 80%;
+      top: auto;
+    }
+  }
+
+  .popup-create-close-handler {
+    height: 16px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    background: #f00;
+    cursor: pointer;
+    z-index: 10;
+  }
+  .popup-create-close-handler:after {
+    content: "";
+    width: 36px;
+    height: 6px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -18px;
+    margin-top: -3px;
+    border-radius: 3px;
+    background: #666;
+  }
 </style>
 
 <script>
-import * as types from '../store/mutation-types'
-import axios from 'axios'
-import vueWaterfallEasy from 'vue-waterfall-easy'
-import PopupCreate from '../popup/create.vue'
-export default {
-  name: 'home',
-  data () {
-    return {
-      showPreloader: true,
-      imgsArr: [],
-      group: 0,
-      pageIndex: 1,
-      pageSize: 30,
-      photoBrowser: null,
-      showPopupCreate: false
-    }
-  },
-  components: {
-    vueWaterfallEasy,
-    PopupCreate
-  },
-  computed: {
-    store () {
-      return this.$store
+  import * as types from '../store/mutation-types'
+  import axios from 'axios'
+  import vueWaterfallEasy from 'vue-waterfall-easy'
+  import PopupCreate from '../popup/create.vue'
+  export default {
+    name: 'home',
+    data () {
+      return {
+        showPreloader: true,
+        imgsArr: [],
+        group: 0,
+        pageIndex: 1,
+        pageSize: 30,
+        photoBrowser: null,
+        showPopupCreate: false
+      }
     },
-    userSettings () {
-      return this.store.state.userSettings
+    components: {
+      vueWaterfallEasy,
+      PopupCreate
     },
-    themeColors () {
-      return this.store.state.themeColors
+    computed: {
+      store () {
+        return this.$store
+      },
+      userSettings () {
+        return this.store.state.userSettings
+      },
+      themeColors () {
+        return this.store.state.themeColors
+      },
+      activeThemeColor () {
+        return this.userSettings.activeThemeColor
+      }
     },
-    activeThemeColor () {
-      return this.userSettings.activeThemeColor
-    }
-  },
-  created () {
-    this.getData()
-  },
-  methods: {
-    showPopupCreateHandler () {
-      this.showPopupCreate = true
+    created () {
+      this.getData()
     },
-    hidePopupCreateHandler () {
-      this.showPopupCreate = false
-    },
-    async refresh (event, done) {
-      this.pageIndex = 1
-      await this.getData()
-      setTimeout(() => {
-        done()
-      }, 800)
-    },
-    getData () {
-      return new Promise(async (resolve) => {
-        await axios.get('../../static/mock/data.json?group=' + this.pageIndex) // 真实环境中，后端会根据参数group返回新的图片数组，这里我用一个惊呆json文件模拟
-          .then(res => {
-            if ((this.pageIndex !== 1) && (this.imgsArr.length >= 200)) {
-              // this.showPreloader = false;
-              // return;
-              this.imgsArr.splice(0, this.pageSize)
-            }
-            if (this.pageIndex === 1) {
-              this.imgsArr = res.data
-            } else {
-              this.imgsArr = this.imgsArr.concat(res.data)
-            }
-            this.pageIndex++
-            resolve(true)
-          }).catch(() => {
-            resolve(true)
-          })
-      })
-    },
-    clickHandler (e, { index, value }) {
-      e.preventDefault()
-      this.photoBrowser = this.$f7.photoBrowser.create({
-        photos: this.imgsArr,
-        type: 'popup',
-        backLinkText: '返回',
-        theme: 'dark',
-        navbarOfText: 'in'
-      })
-      this.photoBrowser.open(Number(index))
-    },
-    setActiveThemeColor (color) {
-      this.store.commit(types.SET_ACTIVE_THEME_COLOR, {
-        activeThemeColor: color
-      })
-    },
-    closeFab () {
-      this.$f7.fab.close()
-    },
-    openPopupCreate () {
-      this.$refs.popupCreateRef.open()
+    methods: {
+      showPopupCreateHandler () {
+        this.showPopupCreate = true
+      },
+      hidePopupCreateHandler () {
+        this.showPopupCreate = false
+      },
+      async refresh (event, done) {
+        this.pageIndex = 1
+        await this.getData()
+        setTimeout(() => {
+          done()
+        }, 800)
+      },
+      getData () {
+        return new Promise(async (resolve) => {
+          await axios.get('../../static/mock/data.json?group=' + this.pageIndex) // 真实环境中，后端会根据参数group返回新的图片数组，这里我用一个惊呆json文件模拟
+            .then(res => {
+              if ((this.pageIndex !== 1) && (this.imgsArr.length >= 200)) {
+                // this.showPreloader = false;
+                // return;
+                this.imgsArr.splice(0, this.pageSize)
+              }
+              if (this.pageIndex === 1) {
+                this.imgsArr = res.data
+              } else {
+                this.imgsArr = this.imgsArr.concat(res.data)
+              }
+              this.pageIndex++
+              resolve(true)
+            }).catch(() => {
+              resolve(true)
+            })
+        })
+      },
+      clickHandler (e, { index, value }) {
+        e.preventDefault()
+        this.photoBrowser = this.$f7.photoBrowser.create({
+          photos: this.imgsArr,
+          type: 'popup',
+          backLinkText: '返回',
+          theme: 'dark',
+          navbarOfText: 'in'
+        })
+        this.photoBrowser.open(Number(index))
+      },
+      setActiveThemeColor (color) {
+        this.store.commit(types.SET_ACTIVE_THEME_COLOR, {
+          activeThemeColor: color
+        })
+      },
+      closeFab () {
+        this.$f7.fab.close()
+      },
+      openPopupCreate () {
+        this.$refs.popupCreateRef.open()
+      }
     }
   }
-}
 </script>

@@ -46,10 +46,11 @@
     <f7-fab position="right-bottom"
             slot="fixed"
             color="red"
+            style="bottom: 48px;"
             @click="$f7router.back()">
-      <f7-icon ios="f7:close"
-               aurora="f7:close"
-               md="material:close"></f7-icon>
+      <f7-icon ios="f7:chevron_left"
+               aurora="f7:chevron_left"
+               md="material:arrow_back"></f7-icon>
     </f7-fab>
     <!-- <div style="position: absolute; left: 0; bottom: 0; width: 100%; height: 40px; background-color: lightblue; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
       <div @click="$f7router.back()">
@@ -81,108 +82,111 @@
 </template>
 
 <script>
-import * as types from '../store/mutation-types'
-export default {
-  name: 'settings',
-  data () {
-    return {
-      themeColorSheetShown: false
-    }
-  },
-  computed: {
-    store () {
-      return this.$store
+  import * as types from '../store/mutation-types'
+  export default {
+    name: 'settings',
+    data () {
+      return {
+        themeColorSheetShown: false
+      }
     },
-    userSettings () {
-      return this.store.state.userSettings
+    computed: {
+      store () {
+        return this.$store
+      },
+      userSettings () {
+        return this.store.state.userSettings
+      },
+      allOsThemes () {
+        return this.store.state.allOsThemes
+      },
+      themeColors () {
+        return this.store.state.themeColors
+      },
+      activeThemeColor () {
+        return this.store.state.userSettings.activeThemeColor
+      },
+      themeDark () {
+        return this.store.state.userSettings.themeDark
+      },
+      osTheme () {
+        return this.store.state.osTheme
+      }
     },
-    allOsThemes () {
-      return this.store.state.allOsThemes
-    },
-    themeColors () {
-      return this.store.state.themeColors
-    },
-    activeThemeColor () {
-      return this.store.state.userSettings.activeThemeColor
-    },
-    themeDark () {
-      return this.store.state.userSettings.themeDark
-    },
-    osTheme () {
-      return this.store.state.osTheme
-    }
-  },
-  methods: {
-    setActiveThemeColor (color) {
-      this.store.commit(types.SET_ACTIVE_THEME_COLOR, {
-        activeThemeColor: color
-      })
-    },
-    openThemeColorSheet () {
-      // this.themeColorSheetShown = true
-      this.$f7.popover.open('.settings-theme-color-select')
-    },
-    closeFab () {
-      this.$f7.fab.close('#setting_fab')
-    },
-    toggleThemeDark (e) {
-      this.store.commit(types.SET_THEME_DARK, {
-        themeDark: e
-      })
-    },
-    changeOsTheme (e) {
-      // console.log(this.$f7route)
-      let selectedTheme = this.allOsThemes[Number(e.selectEl.selectedIndex)].value
-      if (this.osTheme !== selectedTheme) {
-        this.store.commit(types.SET_OS_THEME, {
-          osTheme: selectedTheme
+    methods: {
+      setActiveThemeColor (color) {
+        this.store.commit(types.SET_ACTIVE_THEME_COLOR, {
+          activeThemeColor: color
         })
-        location.reload()
+      },
+      openThemeColorSheet () {
+        // this.themeColorSheetShown = true
+        this.$f7.popover.open('.settings-theme-color-select')
+      },
+      closeFab () {
+        this.$f7.fab.close('#setting_fab')
+      },
+      toggleThemeDark (e) {
+        this.store.commit(types.SET_THEME_DARK, {
+          themeDark: e
+        })
+      },
+      changeOsTheme (e) {
+        // console.log(this.$f7route)
+        let selectedTheme = this.allOsThemes[Number(e.selectEl.selectedIndex)].value
+        if (this.osTheme !== selectedTheme) {
+          this.$f7.dialog.preloader('正在更换主题...')
+          this.store.commit(types.SET_OS_THEME, {
+            osTheme: selectedTheme
+          })
+          setTimeout(() => {
+            location.reload()
+          }, 800)
+        }
       }
     }
   }
-}
 </script>
 
 <style scoped>
-.fs14 {
-  font-size: 14px;
-}
-.active_theme_color {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #c8c8c8;
-}
-.colors_container {
-  width: 260px;
-  height: 260px;
-  padding: 10px;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-.color_item {
-  width: 50px;
-  height: 50px;
-  margin: 5px;
-  border: 1px solid #f5f5f5;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
+  .fs14 {
+    font-size: 14px;
+  }
+  .active_theme_color {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #c8c8c8;
+  }
+  .colors_container {
+    width: 260px;
+    height: 260px;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .color_item {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    border: 1px solid #f5f5f5;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 
-.settings_title {
-  margin-top: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
+  .settings_title {
+    margin-top: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 </style>
 
 
