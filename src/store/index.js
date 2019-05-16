@@ -183,8 +183,9 @@ const store = new Vuex.Store({
     },
     requestInfo: {
       // baseUrl: 'http://172.30.24.71:8081',
-      baseUrl: 'http://grayconfig.zhaopin.com',
-      getGrayConfigLine: '/grayconfig/cmsappversion/getGrayConfigLine'
+      baseUrl: 'http://' + location.hostname + ':3000', // 'http://grayconfig.zhaopin.com',
+      getGrayConfigLine: '/grayconfig/cmsappversion/getGrayConfigLine',
+      create: '/qy/index/create'
     },
     loginInfo: {
       username: '',

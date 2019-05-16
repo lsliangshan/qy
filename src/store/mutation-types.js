@@ -42,3 +42,6 @@ export const SET_THEME_DARK = 'SET_THEME_DARK'
 export const SET_OS_THEME = 'SET_OS_THEME'
 
 export const SET_USER_SETTINGS = 'SET_USER_SETTINGS'
+
+// Actions
+export const AJAX = 'AJAX'
