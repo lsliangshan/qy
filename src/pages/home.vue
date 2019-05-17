@@ -341,12 +341,36 @@
       },
       clickHandler (e, { index, value }) {
         e.preventDefault()
+        const that = this
+        let touchMoved = false
+        let touchTimeout = null
         this.photoBrowser = this.$f7.photoBrowser.create({
           photos: this.imgsArr,
           type: 'popup',
           backLinkText: '返回',
           theme: 'dark',
-          navbarOfText: 'in'
+          navbarOfText: 'in',
+          expositionHideCaptions: false,
+          on: {
+            // touchStart (e) {
+            //   // touchMoved = false
+            //   touchTimeout = setTimeout(() => {
+            //     if (!touchMoved) {
+            //       alert('长按了')
+            //     }
+            //     clearTimeout(touchTimeout)
+            //   }, 600)
+            // },
+            // transitionStart (e) {
+            //   touchTimeout = null
+            //   clearTimeout(touchTimeout)
+            //   touchMoved = true
+            // },
+            // touchEnd (e) {
+            //   clearTimeout(touchTimeout)
+            //   touchMoved = false
+            // }
+          }
         })
         this.photoBrowser.open(Number(index))
       },

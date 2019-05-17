@@ -108,9 +108,15 @@
         <f7-fab-button label="Action 2">2</f7-fab-button>
       </f7-fab-buttons>
     </f7-fab>
-
+    <svgs></svgs>
   </f7-app>
 </template>
+<style>
+  .photo-browser-popup img {
+    pointer-events: none !important;
+  }
+</style>
+
 
 <script>
   // Import Routes
@@ -119,6 +125,9 @@
   import { StorageUtil } from './utils/index'
 
   export default {
+    components: {
+      Svgs: () => import('./pages/svgs.vue')
+    },
     data () {
       let osTheme = localStorage.getItem('local-os-theme')
       if (!osTheme || (['ios', 'md'].indexOf(osTheme) < 0)) {

@@ -168,7 +168,7 @@
     /* --f7-page-bg-color: #fff; */
     --f7-block-strong-border-color: transparent;
     /* height: calc(100% - var(--f7-navbar-height) - var(--f7-statusbar-height));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      top: calc(var(--f7-navbar-height) + var(--f7-statusbar-height)); */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          top: calc(var(--f7-navbar-height) + var(--f7-statusbar-height)); */
     height: 340px;
     top: calc(100% - var(--f7-statusbar-height) - 340px);
   }
@@ -321,7 +321,8 @@
         },
         reader: null,
         questionInputBlurred: true,
-        notification: null
+        notification: null,
+        toaster: null
       }
     },
     computed: {
@@ -337,7 +338,11 @@
     },
     created () {
       this.reader = new FileReader()
-      this.notificate()
+      // this.notificate()
+      // this.toast({
+      //   type: 'info',
+      //   position: 'bottom'
+      // })
     },
     mounted () {
       this.createPopup = this.$f7.popup.create({
@@ -399,7 +404,9 @@
       openPopupCreateSettings () {
         this.createPopup.open()
       },
-      closePopupCreateSettings () { },
+      closePopupCreateSettings () {
+        this.createPopup.close()
+      },
       getBit (number, location) {
         return (number >> location) & 1
       },
@@ -481,7 +488,16 @@
         ctx.putImageData(imageData, 0, 0)
         let createdData = await this.create(canvas.toDataURL())
         if (createdData.status !== 200) {
-
+          this.toast({
+            type: 'error',
+            text: createdData.message || '失败'
+          })
+        } else {
+          this.closePopupCreateSettings()
+          this.toast({
+            type: 'success',
+            text: '发送成功'
+          })
         }
       },
       create (d) {
@@ -498,15 +514,53 @@
       },
       notificate (args = {}) {
         this.notification = this.$f7.notification.create({
-          icon: args.icon || '<img src="path/to/icon.png">',
-          title: args.title || 'QY',
+          icon: args.icon || '<svg width="16" height="16" style="width: 16px; height: 16px;" stroke="#202121" fill="none"><use xlink:href="#image-logo"></use></svg>',
+          title: args.title || 'QY' || '<svg width="16" height="16" style="width: 16px; height: 16px;" stroke="#202121"><use xlink:href="#text-logo"></use></svg>',
           titleRightText: 'now',
           closeButton: true,
           subtitle: args.subtitle || 'This is a subtitle',
           text: args.text || 'This is a simple notification message',
-          closeTimeout: args.duration || 3000,
+          closeTimeout: args.duration || 2000,
         })
         this.notification.open()
+      },
+      toast (args = {}) {
+        let icon = ''
+        let theme = this.$f7.theme
+        switch (args.type) {
+          case 'success':
+            icon = (theme === 'ios' ? ('<i class="f7-icons">check</i>') : ('<i class="material-icons">done</i>'))
+            break
+          case 'error':
+            icon = (theme === 'ios' ? ('<i class="f7-icons">close</i>') : ('<i class="material-icons">close</i>'))
+            break
+          case 'info':
+            icon = '<i class="f7-icons">info</i>'
+            break
+          case 'warning':
+            icon = (theme === 'ios' ? ('<i class="f7-icons">warning</i>') : ('<i class="material-icons">priority_high</i>'))
+            break
+          default:
+            break
+        }
+        let toastOption = {
+          text: args.text || 'toast',
+          position: args.position || 'top',
+          closeTimeout: args.duration || 2000,
+          closeButton: args.closeButton || (args.position && (args.position !== 'center')),
+          closeButtonText: args.closeButtonText || 'ok'
+        }
+        if (args.type) {
+          toastOption.position = 'center'
+          if (icon) {
+            toastOption.icon = icon
+          }
+        }
+        if (args.on) {
+          toastOption.on = args.on
+        }
+        this.toaster = this.$f7.toast.create(toastOption)
+        this.toaster.open()
       }
     },
     watch: {
