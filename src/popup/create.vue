@@ -31,6 +31,7 @@
                  name="cover"
                  accept="image/*"
                  capture="camera"
+                 @change="changePicFileHandler"
                  v-else />
         </div>
         <f7-block class="range_container"
@@ -66,6 +67,7 @@
       <f7-fab-buttons position="top">
         <f7-fab-button label="设置"
                        :fab-close="true"
+                       v-if="imgSrc"
                        @click="openPopupCreateSettings">
           <f7-icon ios="f7:gear"
                    aurora="f7:gear"
@@ -154,348 +156,363 @@
   </f7-page>
 </template>
 <style scoped>
-.w100p {
-  width: 100%;
-}
-.h100p {
-  height: 100%;
-}
-.popup-create-settings {
-  --f7-popup-border-radius: 15px 15px 0 0;
-  --f7-popup-tablet-border-radius: 15px;
-  /* --f7-page-bg-color: #fff; */
-  --f7-block-strong-border-color: transparent;
-  /* height: calc(100% - var(--f7-navbar-height) - var(--f7-statusbar-height));
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  top: calc(var(--f7-navbar-height) + var(--f7-statusbar-height)); */
-  height: 340px;
-  top: calc(100% - var(--f7-statusbar-height) - 340px);
-}
-.popup-create-close-handler {
-  height: 40px;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  top: 0;
-  /* background: #fff; */
-  cursor: pointer;
-  z-index: 10;
-}
-.popup-create-close-handler:after {
-  content: "";
-  width: 36px;
-  height: 6px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -18px;
-  margin-top: -3px;
-  border-radius: 3px;
-  background: #666;
-}
-.popup_body {
-  width: 100%;
-  height: 100%;
-  /* background-color: #fff; */
-}
-.popup_inner {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.popup_placeholder {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.popup_placeholder i {
-  color: #c8c8c8;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.file_input_container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  opacity: 0;
-}
-.target {
-  position: absolute;
-  pointer-events: none;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.target canvas {
-  pointer-events: none;
-  width: 100% !important;
-  height: 100% !important;
-}
-.range_container {
-  position: absolute;
-  width: var(--f7-range-size);
-  height: 160px;
-  right: 20px;
-  top: 200px;
-}
-.popup_settings_body {
-  width: 100%;
-  height: calc(100% - 40px);
-  margin-top: 40px;
-}
-.form_item {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.form_item_label_container {
-  width: 100%;
-  height: 24px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-.form_item_label_container .limit_count {
-  margin-left: 10px;
-}
-.form_item_label_container .limit_count span {
-  color: red;
-  font-size: 16px;
-}
-.btn_send {
-  position: absolute;
-  right: 10px;
-  width: 100px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+  .w100p {
+    width: 100%;
+  }
+  .h100p {
+    height: 100%;
+  }
+  .popup-create-settings {
+    --f7-popup-border-radius: 15px 15px 0 0;
+    --f7-popup-tablet-border-radius: 15px;
+    /* --f7-page-bg-color: #fff; */
+    --f7-block-strong-border-color: transparent;
+    /* height: calc(100% - var(--f7-navbar-height) - var(--f7-statusbar-height));
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      top: calc(var(--f7-navbar-height) + var(--f7-statusbar-height)); */
+    height: 340px;
+    top: calc(100% - var(--f7-statusbar-height) - 340px);
+  }
+  .popup-create-close-handler {
+    height: 40px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    /* background: #fff; */
+    cursor: pointer;
+    z-index: 10;
+  }
+  .popup-create-close-handler:after {
+    content: "";
+    width: 36px;
+    height: 6px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -18px;
+    margin-top: -3px;
+    border-radius: 3px;
+    background: #666;
+  }
+  .popup_body {
+    width: 100%;
+    height: 100%;
+    /* background-color: #fff; */
+  }
+  .popup_inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .popup_placeholder {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .popup_placeholder i {
+    color: #c8c8c8;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .file_input_container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+  }
+  .target {
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .target canvas {
+    pointer-events: none;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .range_container {
+    position: absolute;
+    width: var(--f7-range-size);
+    height: 160px;
+    right: 20px;
+    top: 200px;
+  }
+  .popup_settings_body {
+    width: 100%;
+    height: calc(100% - 40px);
+    margin-top: 40px;
+  }
+  .form_item {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .form_item_label_container {
+    width: 100%;
+    height: 24px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  .form_item_label_container .limit_count {
+    margin-left: 10px;
+  }
+  .form_item_label_container .limit_count span {
+    color: red;
+    font-size: 16px;
+  }
+  .btn_send {
+    position: absolute;
+    right: 10px;
+    width: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 </style>
 
 <script>
-import * as StackBlur from 'stackblur-canvas'
-import * as types from '../store/mutation-types'
-export default {
-  name: 'PopupCreate',
-  props: {
-  },
-  data () {
-    return {
-      createPopup: null,
-      imgSrc: '',
-      isIos: this.$f7.device.ios,
-      originBox: {},
-      mosaicRangeOption: {
-        max: 100,
-        min: 0,
-        value: 0,
-        step: 1,
-        dotSize: 30,
-        // data: [3, 4, 6, 8, 10, 16, 20],
-        rangeHandleHeight: 30
-      },
-      formData: {
-        file: null,
-        question: 'question',
-        answer: '123'
-      },
-      reader: null,
-      questionInputBlurred: true
-    }
-  },
-  computed: {
-    store () {
-      return this.$store
+  import * as StackBlur from 'stackblur-canvas'
+  import * as types from '../store/mutation-types'
+  export default {
+    name: 'PopupCreate',
+    props: {
     },
-    requestInfo () {
-      return this.store.state.requestInfo
-    },
-    enableEncode () {
-      return !!this.formData.question.trim() && !!this.formData.answer.trim()
-    }
-  },
-  created () {
-    this.reader = new FileReader()
-  },
-  mounted () {
-    this.createPopup = this.$f7.popup.create({
-      el: '.popup-create-settings',
-      swipeToClose: true,
-      swipeHandler: '.popup-create-close-handler'
-    })
-  },
-  methods: {
-    changeQuestion (e) {
-      this.formData.question = e.target.value.trim()
-    },
-    changeAnswer (e) {
-      this.formData.answer = e.target.value.trim()
-    },
-    questionInputBlur () {
-      this.questionInputBlurred = true
-      this.resetPage()
-    },
-    questionInputFocus () {
-      this.questionInputBlurred = false
-    },
-    answerInputBlur () {
-      this.resetPage()
-    },
-    resetMosaic () {
-      this.mosaicRangeOption.value = 0
-    },
-    renderMosaicImage (e) {
-      this.mosaicRangeOption.value = Number(e)
-      StackBlur.image(this.$refs.originRef, this.$refs.targetCanvasRef, e)
-    },
-    async changePicFileHandler (e) {
-      if (e.target.files.length > 0) {
-        this.resetMosaic()
-        this.formData.file = e.target.files[0]
-        await this.formatImgSrc(this.formData.file)
+    data () {
+      return {
+        createPopup: null,
+        imgSrc: '',
+        isIos: this.$f7.device.ios,
+        originBox: {},
+        mosaicRangeOption: {
+          max: 100,
+          min: 0,
+          value: 0,
+          step: 1,
+          dotSize: 30,
+          // data: [3, 4, 6, 8, 10, 16, 20],
+          rangeHandleHeight: 30
+        },
+        formData: {
+          file: null,
+          question: 'question',
+          answer: '123'
+        },
+        reader: null,
+        questionInputBlurred: true,
+        notification: null
       }
     },
-    formatImgSrc (file) {
-      return new Promise((resolve) => {
-        this.reader.readAsDataURL(file)
-        this.reader.onload = (e) => {
-          this.imgSrc = e.target.result
-          resolve(true)
-        }
+    computed: {
+      store () {
+        return this.$store
+      },
+      requestInfo () {
+        return this.store.state.requestInfo
+      },
+      enableEncode () {
+        return !!this.formData.question.trim() && !!this.formData.answer.trim()
+      }
+    },
+    created () {
+      this.reader = new FileReader()
+      this.notificate()
+    },
+    mounted () {
+      this.createPopup = this.$f7.popup.create({
+        el: '.popup-create-settings',
+        swipeToClose: true,
+        swipeHandler: '.popup-create-close-handler'
       })
     },
-    initOriginBox () {
-      let origin = this.$refs.originRef
-      return new Promise((resolve) => {
-        origin.onload = (e) => {
-          let originBox = origin.getBoundingClientRect()
-          this.originBox = originBox
-          resolve(true)
+    methods: {
+      changeQuestion (e) {
+        this.formData.question = e.target.value.trim()
+      },
+      changeAnswer (e) {
+        this.formData.answer = e.target.value.trim()
+      },
+      questionInputBlur () {
+        this.questionInputBlurred = true
+        this.resetPage()
+      },
+      questionInputFocus () {
+        this.questionInputBlurred = false
+      },
+      answerInputBlur () {
+        this.resetPage()
+      },
+      resetMosaic () {
+        this.mosaicRangeOption.value = 0
+      },
+      renderMosaicImage (e) {
+        this.mosaicRangeOption.value = Number(e)
+        StackBlur.image(this.$refs.originRef, this.$refs.targetCanvasRef, e)
+      },
+      async changePicFileHandler (e) {
+        if (e.target.files.length > 0) {
+          this.resetMosaic()
+          this.formData.file = e.target.files[0]
+          await this.formatImgSrc(this.formData.file)
         }
-      })
-    },
-    openPopupCreateSettings () {
-      this.createPopup.open()
-    },
-    closePopupCreateSettings () { },
-    getBit (number, location) {
-      return (number >> location) & 1
-    },
-    setBit (number, location, bit) {
-      return (number & ~(1 << location)) | (bit << location)
-    },
-    getNextLocation (history, hash, total) {
-      var pos = history.length
-      var loc = Math.abs(hash[pos % hash.length] * (pos + 1)) % total
-      while (true) {
-        if (loc >= total) {
-          loc = 0
-        } else if (history.indexOf(loc) >= 0) {
-          loc++
-        } else if ((loc + 1) % 4 === 0) {
-          loc++
-        } else {
-          history.push(loc)
-          return loc
-        }
-      }
-    },
-    getMessageBits (message) {
-      var messageBits = []
-      for (var i = 0; i < message.length; i++) {
-        var code = message.charCodeAt(i)
-        messageBits = messageBits.concat(this.getBitsFromNumber(code))
-      }
-      return messageBits
-    },
-    getBitsFromNumber (number) {
-      var bits = []
-      for (var i = 0; i < 16; i++) {
-        bits.push(this.getBit(number, i))
-      }
-      return bits
-    },
-    encodeMessage (colors, hash, message) {
-      // make an array of bits from the message
-      var messageBits = this.getBitsFromNumber(message.length)
-      messageBits = messageBits.concat(this.getMessageBits(message))
-
-      // this will store the color values we've already modified
-      var history = []
-
-      // encode the bits into the pixels
-      var pos = 0
-      while (pos < messageBits.length) {
-        // set the next color value to the next bit
-        var loc = this.getNextLocation(history, hash, colors.length)
-        colors[loc] = this.setBit(colors[loc], 0, messageBits[pos])
-
-        // set the alpha value in this pixel to 255
-        // we have to do this because browsers do premultiplied alpha
-        // see for example: http://stackoverflow.com/q/4309364
-        while ((loc + 1) % 4 !== 0) {
-          loc++
-        }
-        colors[loc] = 255
-
-        pos++
-      }
-    },
-    async encode () {
-      let canvas = this.$refs.targetCanvasRef
-      let ctx = canvas.getContext('2d')
-
-      let question = this.formData.question.trim()
-      let answer = this.formData.answer
-
-      if (question.length > 0) {
-        question = sjcl.encrypt(answer, question)
-      } else {
-        return
-      }
-
-      let imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
-      this.encodeMessage(imageData.data, sjcl.hash.sha256.hash(answer), question)
-      ctx.putImageData(imageData, 0, 0)
-      await this.create(canvas.toDataURL())
-    },
-    create (d) {
-      return new Promise(async (resolve) => {
-        let createdData = await this.store.dispatch(types.AJAX, {
-          url: this.requestInfo.create,
-          data: Object.assign({}, this.formData, {
-            origin: this.imgSrc,
-            blurred: d
-          })
+      },
+      formatImgSrc (file) {
+        return new Promise((resolve) => {
+          this.reader.readAsDataURL(file)
+          this.reader.onload = (e) => {
+            this.imgSrc = e.target.result
+            resolve(true)
+          }
         })
-        alert('发送成功')
-        console.log('created data: ', createdData)
-        resolve(createdData)
-      })
-    }
-  },
-  watch: {
-    async imgSrc () {
-      await this.initOriginBox()
+      },
+      initOriginBox () {
+        let origin = this.$refs.originRef
+        return new Promise((resolve) => {
+          origin.onload = (e) => {
+            let originBox = origin.getBoundingClientRect()
+            this.originBox = originBox
+            resolve(true)
+          }
+        })
+      },
+      openPopupCreateSettings () {
+        this.createPopup.open()
+      },
+      closePopupCreateSettings () { },
+      getBit (number, location) {
+        return (number >> location) & 1
+      },
+      setBit (number, location, bit) {
+        return (number & ~(1 << location)) | (bit << location)
+      },
+      getNextLocation (history, hash, total) {
+        var pos = history.length
+        var loc = Math.abs(hash[pos % hash.length] * (pos + 1)) % total
+        while (true) {
+          if (loc >= total) {
+            loc = 0
+          } else if (history.indexOf(loc) >= 0) {
+            loc++
+          } else if ((loc + 1) % 4 === 0) {
+            loc++
+          } else {
+            history.push(loc)
+            return loc
+          }
+        }
+      },
+      getMessageBits (message) {
+        var messageBits = []
+        for (var i = 0; i < message.length; i++) {
+          var code = message.charCodeAt(i)
+          messageBits = messageBits.concat(this.getBitsFromNumber(code))
+        }
+        return messageBits
+      },
+      getBitsFromNumber (number) {
+        var bits = []
+        for (var i = 0; i < 16; i++) {
+          bits.push(this.getBit(number, i))
+        }
+        return bits
+      },
+      encodeMessage (colors, hash, message) {
+        // make an array of bits from the message
+        var messageBits = this.getBitsFromNumber(message.length)
+        messageBits = messageBits.concat(this.getMessageBits(message))
+
+        // this will store the color values we've already modified
+        var history = []
+
+        // encode the bits into the pixels
+        var pos = 0
+        while (pos < messageBits.length) {
+          // set the next color value to the next bit
+          var loc = this.getNextLocation(history, hash, colors.length)
+          colors[loc] = this.setBit(colors[loc], 0, messageBits[pos])
+
+          // set the alpha value in this pixel to 255
+          // we have to do this because browsers do premultiplied alpha
+          // see for example: http://stackoverflow.com/q/4309364
+          while ((loc + 1) % 4 !== 0) {
+            loc++
+          }
+          colors[loc] = 255
+
+          pos++
+        }
+      },
+      async encode () {
+        let canvas = this.$refs.targetCanvasRef
+        let ctx = canvas.getContext('2d')
+
+        let question = this.formData.question.trim()
+        let answer = this.formData.answer
+
+        if (question.length > 0) {
+          question = sjcl.encrypt(answer, question)
+        } else {
+          return
+        }
+
+        let imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
+        this.encodeMessage(imageData.data, sjcl.hash.sha256.hash(answer), question)
+        ctx.putImageData(imageData, 0, 0)
+        let createdData = await this.create(canvas.toDataURL())
+        if (createdData.status !== 200) {
+
+        }
+      },
+      create (d) {
+        return new Promise(async (resolve, reject) => {
+          let createdData = await this.store.dispatch(types.AJAX, {
+            url: this.requestInfo.create,
+            data: Object.assign({}, this.formData, {
+              origin: this.imgSrc,
+              blurred: d
+            })
+          })
+          resolve(createdData)
+        })
+      },
+      notificate (args = {}) {
+        this.notification = this.$f7.notification.create({
+          icon: args.icon || '<img src="path/to/icon.png">',
+          title: args.title || 'QY',
+          titleRightText: 'now',
+          closeButton: true,
+          subtitle: args.subtitle || 'This is a subtitle',
+          text: args.text || 'This is a simple notification message',
+          closeTimeout: args.duration || 3000,
+        })
+        this.notification.open()
+      }
+    },
+    watch: {
+      async imgSrc () {
+        await this.initOriginBox()
+      }
     }
   }
-}
 </script>
